@@ -7,23 +7,22 @@ import matplotlib as plt
 # print(plt.__version__)
 
 
+df1 = pd.DataFrame(np.arange(16).reshape(4, -1),
+                   columns=('c1', 'c2', 'c3', 'c4'),
+                   index=('r1', 'r2', 'r3', 'r4'))
 
-# df1 = pd.DataFrame(np.arange(16).reshape(4,-1), 
-#                     columns = ('c1','c2','c3','c4'), 
-#                     index = ('r1','r2','r3','r4'))
-
-# print(df1)
+print(df1)
 # df1.drop('c2',axis = 1) #칼럼으로 접근
 # print(df1.drop(columns = ['c3','c4']))
 
 # merge 데이터병합
 
 # data1 = pd.DataFrame({'id':['01','02','03','04','05','06'],
-#                     'col1': np.random.randint(0,50,6),  
+#                     'col1': np.random.randint(0,50,6),
 #                     'col2': np.random.randint(1000,2000,6)})
 
 # data2 = pd.DataFrame({'id':['04','05','06','07'],
-#                     'col1': np.random.randint(0,50,4),  
+#                     'col1': np.random.randint(0,50,4),
 #                     'col2': np.random.randint(1000,2000,4)})
 
 # print(data1, data2)
@@ -50,7 +49,7 @@ import matplotlib as plt
 
 # ---------------------------------------------
 
-# frame = pd.DataFrame(   [[np.nan, np.nan, np.nan, np.nan], 
+# frame = pd.DataFrame(   [[np.nan, np.nan, np.nan, np.nan],
 #                         [10,    5,  40, 6],
 #                         [5, 2,  30, 8],
 #                         [20,    np.nan,     20, 6],
@@ -80,8 +79,8 @@ import matplotlib as plt
 
 # ---------------------------------------------
 
-## binning : 연속형 데이터를 구간으로 나누어 범주화
-            # 숫자로 되어있는걸 -> 카테고리별 구간으로 나눔
+# binning : 연속형 데이터를 구간으로 나누어 범주화
+# 숫자로 되어있는걸 -> 카테고리별 구간으로 나눔
 
 # age = [20,35,67,39,59,44,56,77,28,20,22,80,32,46,52,19,33,5,15,50,29,21,33,48,85,80,31,10]
 # bins = [0,20,40,60,100]
@@ -95,7 +94,7 @@ import matplotlib as plt
 
 # --------------------------------------
 
-# [중요] get_dummies : categorical variable(명목형 변수)를 one-hot encoding해줌 
+# [중요] get_dummies : categorical variable(명목형 변수)를 one-hot encoding해줌
 
 # df = pd.DataFrame({ 'col1':[10,20,30,40],
 #                     'col2':['a','b','c','d']})
@@ -112,12 +111,12 @@ import matplotlib as plt
 
 # groupby
 
-kbo = pd.read_csv('C:/Users/sundooedu/Documents/JH_version/Day16/kbo.csv')
-print(kbo.head())
-print(kbo.shape)
-print(kbo['팀'].unique())
-print(kbo.info())
-print(kbo.groupby('팀').count())
-print(kbo.groupby(['연도','팀']).sum())     #group을 연도로 묶고, 그 안에서 팀으로 한번 더 묶음
-print(kbo.groupby('팀') ['승률'].max())      #group을 팀으로 묶고, 그 중 승률만 보여줌
-print(kbo.groupby(['연도','팀']) ['승률','순위'].max())
+# kbo = pd.read_csv('C:/Users/sundooedu/Documents/JH_version/Day16/kbo.csv')
+# print(kbo.head())
+# print(kbo.shape)
+# print(kbo['팀'].unique())
+# print(kbo.info())
+# print(kbo.groupby('팀').count())
+# print(kbo.groupby(['연도','팀']).sum())     #group을 연도로 묶고, 그 안에서 팀으로 한번 더 묶음
+# print(kbo.groupby('팀') ['승률'].max())      #group을 팀으로 묶고, 그 중 승률만 보여줌
+# print(kbo.groupby(['연도','팀']) ['승률','순위'].max())
