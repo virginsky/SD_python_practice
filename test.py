@@ -7,11 +7,11 @@ import matplotlib as plt
 # print(plt.__version__)
 
 
-df1 = pd.DataFrame(np.arange(16).reshape(4, -1),
-                   columns=('c1', 'c2', 'c3', 'c4'),
-                   index=('r1', 'r2', 'r3', 'r4'))
+# df1 = pd.DataFrame(np.arange(16).reshape(4, -1),
+#                    columns=('c1', 'c2', 'c3', 'c4'),
+#                    index=('r1', 'r2', 'r3', 'r4'))
 
-print(df1)
+# print(df1)
 # df1.drop('c2',axis = 1) #칼럼으로 접근
 # print(df1.drop(columns = ['c3','c4']))
 
@@ -120,3 +120,5 @@ print(df1)
 # print(kbo.groupby(['연도','팀']).sum())     #group을 연도로 묶고, 그 안에서 팀으로 한번 더 묶음
 # print(kbo.groupby('팀') ['승률'].max())      #group을 팀으로 묶고, 그 중 승률만 보여줌
 # print(kbo.groupby(['연도','팀']) ['승률','순위'].max())
+
+# 맥 설치 성공!
