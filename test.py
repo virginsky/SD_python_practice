@@ -121,4 +121,32 @@ import matplotlib as plt
 # print(kbo.groupby('팀') ['승률'].max())      #group을 팀으로 묶고, 그 중 승률만 보여줌
 # print(kbo.groupby(['연도','팀']) ['승률','순위'].max())
 
+
+# ---------------------------복습(210402)------------------
 # 맥 설치 성공!
+# p153 연습문제 5-2
+# a = input()
+# b = input()
+# c = input()
+
+# if a > 100 or b > 100 or c > 100:
+#     print("잘못된 숫자가 입력되었습니다.")
+# elif a > 65 and b > 65 and c > 65:
+#     print("합격")
+# else:
+#     print("불합격")
+
+# < 가위바위보 문제>
+# 사용자 입력과 random함수를 사용하여,
+# 사용자와 컴퓨터가 대결하는 가위바위보 게임을 만들어보자
+# 입력 : [문자열]"가위","바위" 혹은 "보"
+# 출력 : [문자열] 결과 반환
+
+# 구구단 예제
+# def gugu(num):
+#     for i in range(1, 10):
+#         print(f'{num} x {i} = {num * i}')
+
+
+# print(gugu(3))
+# print(gugu(5))
