@@ -1,8 +1,65 @@
+# # 강의 스케쥴 
+#  A. 파이썬 (초급~고급) (3월 스케쥴 - 2주)
+#     선형대수(numpy)
+#     Pandas
+#     Matplotlib
+
+#  B. Machine Learning algorism(4월 스케쥴 - 4주)
+#     1. Linear regression (21.04.06)
+#         Gradient Descent(p17 경사하강법 - 비용최소화하기)
+#         Ridge, Lasso, elastic
+#         Sklearn boston hous price
+#         Kaggle 실습(1~2개)
+#     2. Multiple regression
+#         Gradient Descent(p17 경사하강법 - 비용최소화하기)
+#         Ridge, Lasso, elastic
+#         Sklearn boston hous price
+#         Kaggle 실습(1~2개)
+#     3. Poisson regression
+#     4. Logstic regression
+#     5. Classification (+ Kaggle 실습 6~7개 )
+#         a. Decision tree
+#             entropy, Informthea gain?
+#             Gini index
+#         b. Bresting, Bagging, Voting, Stacting?
+#             Random Forest
+#             Gradiet Botosting
+#             Ada boosting
+#             XGBoosting
+#             Light GBM
+#             Catboost
+#             TabNet
+#     6. Clustering ( + Kaggle 실습 3~4개 )
+#         K-means
+#         K-meroid
+#         Gaussian mixed model
+#         DBSCAN
+#     7. bayesion -> * Likelihood *
+#         DACinear D Anaraysi?
+#         Support Vector machine
+#             Kernel
+        
+#  C. Deep Learning (5월 스케쥴 - 4주)
+#     1. Perception
+#     2. Nuti Perceturon
+#     3. Convolutinal neurat neti?
+#     4. Recurend neural netc?
+
+#  D. Etc..(선형대수, 확률론, 수리통계, 미적분학, 해석학)
+
+
+
+
+
+
+
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import sklearn 
+import statsmodels.api as sm
 
 
 # print(np.__version__)
@@ -10,6 +67,7 @@ import sklearn
 # # print(plt.__version__) #.pyplot는 버젼 안나옴
 # print(sns.__version__)
 # print(sklearn.__version__)
+# print(sm.__version__)
 
 # df1 = pd.DataFrame(np.arange(16).reshape(4, -1),
 #                    columns=('c1', 'c2', 'c3', 'c4'),
@@ -524,6 +582,345 @@ import sklearn
 
 
 
+
+
+
+
+
+# # ################# 회귀분석 (Regression Analysis) #######################
+# # Regression_210406.ipynb
+
+# import numpy as np
+# import matplotlib.pyplot as plt
+
+# np.random.seed(0)
+# # y = 4X + 6 식을 근사(w1=4, w0=6). random 값은 Noise를 위해 만듬
+# X = 2 * np.random.rand(100,1)
+# y = 6 +4 * X+np.random.randn(100,1)
+
+# # X, y 데이터 셋 scatter plot으로 시각화
+# plt.scatter(X, y)
+# # plt.show()
+
+# # w1 과 w0 를 업데이트 할 w1_update, w0_update를 반환. 
+# def get_weight_updates(w1, w0, X, y, learning_rate=0.01):
+#     N = len(y)      # 벡터의 길이
+#     # 먼저 w1_update, w0_update를 각각 w1, w0의 shape와 동일한 크기를 가진 0 값으로 초기화
+#     w1_update = np.zeros_like(w1)
+#     w0_update = np.zeros_like(w0)
+#     # 예측 배열 계산하고 예측과 실제 값의 차이 계산
+#     y_pred = np.dot(X, w1.T) + w0       #np.matmul써도 되지만, 어차피 벡터계산이기에 dot을 사용
+#     diff = y-y_pred                     #error function (실제값 - 예측값)
+         
+#     # w0_update를 dot 행렬 연산으로 구하기 위해 모두 1값을 가진 행렬 생성 
+#     w0_factors = np.ones((N,1))         #초기값 ones로 세팅(N크기만큼 받아들이고,)
+
+#     # w1과 w0을 업데이트할 w1_update와 w0_update 계산  (error function : mse(mean square error))
+#     w1_update = -(2/N)*learning_rate*(np.dot(X.T, diff))        #summation_i^n (y-y_hat)(-x_i)
+#     w0_update = -(2/N)*learning_rate*(np.dot(w0_factors.T, diff))    
+    
+#     return w1_update, w0_update
+
+
+
+
+#     # 입력 인자 iters로 주어진 횟수만큼 반복적으로 w1과 w0를 업데이트 적용함. 
+# def gradient_descent_steps(X, y, iters=10000):
+#     # w0와 w1을 모두 0으로 초기화. 
+#     w0 = np.zeros((1,1))
+#     w1 = np.zeros((1,1))
+    
+#     # 인자로 주어진 iters 만큼 반복적으로 get_weight_updates() 호출하여 w1, w0 업데이트 수행. 
+#     for ind in range(iters):    #w1_update = gradient descent 방법
+#         w1_update, w0_update = get_weight_updates(w1, w0, X, y, learning_rate=0.01)
+#         w1 = w1 - w1_update     #w1(new) = w1(old) - update  // update=0 -> new = old -> 최적의 값을 찾음
+#         w0 = w0 - w0_update
+              
+#     return w1, w0
+
+
+
+# def get_cost(y, y_pred):
+#     N = len(y) 
+#     cost = np.sum(np.square(y - y_pred))/N      # root(실제-예측) 다 더해서 저장한게 cost
+#     return cost
+
+# w1, w0 = gradient_descent_steps(X, y, iters=1000)   #  1000번 반복하여 최적의 값을 뽑아 그때의 cost를 출력
+# print("w1:{0:.3f} w0:{1:.3f}".format(w1[0,0], w0[0,0]))
+# y_pred = w1[0,0] * X + w0
+# print('Gradient Descent Total Cost:{0:.4f}'.format(get_cost(y, y_pred)))
+
+# plt.scatter(X, y)
+# plt.plot(X,y_pred)
+# # plt.show()
+
+
+# # data가 적으면 gradient descent방법을 사용하겠지만, 
+# # 데이터가 클 경우에는 미분자체가 계산량이 많아지거나 변수가 많아서 미분이 많아짐
+# # 통계에서는 모집단(전체) -> 표본(sample)통계량 혹은 결론 -> Stochastic
+# def stochastic_gradient_descent_steps(X, y, batch_size=10, iters=1000):
+#     w0 = np.zeros((1,1))
+#     w1 = np.zeros((1,1))
+#     prev_cost = 100000
+#     iter_index =0
+    
+#     for ind in range(iters):
+#         np.random.seed(ind)
+#         # 전체 X, y 데이터에서 랜덤하게 batch_size만큼 데이터 추출하여 sample_X, sample_y로 저장 (참고 : https://medium.com/@shistory02/numpy-permutation-vs-shuffle-34fe56f0c246)
+#         # Stochastic gradient descent / Mini-batch graident descnet (참고 : https://nonmeyet.tistory.com/entry/Batch-MiniBatch-Stochastic-%EC%A0%95%EC%9D%98%EC%99%80-%EC%84%A4%EB%AA%85-%EB%B0%8F-%EC%98%88%EC%8B%9C)
+#         stochastic_random_index = np.random.permutation(X.shape[0])
+#         sample_X = X[stochastic_random_index[0:batch_size]]
+#         sample_y = y[stochastic_random_index[0:batch_size]]
+#         # 랜덤하게 batch_size만큼 추출된 데이터 기반으로 w1_update, w0_update 계산 후 업데이트
+#         w1_update, w0_update = get_weight_updates(w1, w0, sample_X, sample_y, learning_rate=0.01)
+#         w1 = w1 - w1_update
+#         w0 = w0 - w0_update
+    
+#     return w1, w0
+
+
+# w1, w0 = stochastic_gradient_descent_steps(X, y, iters=1000)
+# print("w1:",round(w1[0,0],3),"w0:",round(w0[0,0],3))
+# y_pred = w1[0,0] * X + w0
+# print('Stochastic Gradient Descent Total Cost:{0:.4f}'.format(get_cost(y, y_pred)))
+
+
+
+# ##################################################################
+
+
+
+# #보폭에 따른 결과 비교
+# import numpy as np
+# import matplotlib.pyplot as plt
+
+# lr_list = [0.001, 0.1, 0.3, 0.4]
+
+# def get_derivative(lr_list):
+
+#   w_old = 2
+#   derivative = [w_old]
+
+#   y = [w_old ** 2] # 손실 함수를 y = x^2로 정의함.
+
+#   for i in range(1,10):
+#     #먼저 해당 위치에서 미분값을 구함
+
+#     dev_value = w_old **2
+
+#     #위의 값을 이용하여 가중치를 업데이트
+#     w_new = w_old - lr * dev_value
+#     w_old = w_new
+
+#     derivative.append(w_old) #업데이트 된 가중치를 저장 함,.
+#     y.append(w_old ** 2) #업데이트 된 가중치의 손실값을 저장 함.
+
+#   return derivative, y
+
+# x = np.linspace(-2,2,50) 
+# x_square = [i**2 for i in x]
+
+# fig = plt.figure(figsize=(12, 7))
+
+# for i,lr in enumerate(lr_list):
+#   derivative, y =get_derivative(lr)
+#   ax = fig.add_subplot(2, 2, i+1)
+#   ax.scatter(derivative, y, color = 'red')
+#   ax.plot(x, x_square)
+#   ax.title.set_text('lr = '+str(lr))
+
+# plt.show()
+
+
+
+
+
+
+
+
+
+
+
+# ################# Sklearn Linear Regression Tutorial with Boston House Dataset #######################
+
+# # import numpy as np
+# # import pandas as pd
+
+# ## Visualization Libraries
+# # import seaborn as sns
+# # import matplotlib.pyplot as plt
+
+
+
+# #imports from sklearn library
+
+# from sklearn import datasets
+# from sklearn.linear_model import LinearRegression
+# from sklearn.model_selection import train_test_split, cross_val_score
+# from sklearn.metrics import mean_squared_error
+
+
+
+# #To plot the graph embedded in the notebook
+# # %matplotlib inline  # VS에서는 필요x
+#         # load_boston의 column 의 의미
+#             # CRIM: 지역별 범죄 발생률
+#             # ZN: 25,000을 초과하는 거주 지역의 비율
+#             # INDUS: 비상업 지역의 넓이 비율
+#             # CHAS: 찰스강에 대한 더미 변수(강의 경계에 위치 여부에 따라 맞으면1, 아니면 0)
+#             # NOX: 일산화질소의 농도
+#             # RM: 거주할 수 있는 방의 개수
+#             # AGE: 1940년 이전에 건축된 소유 주택의 비율
+#             # DIS: 5개 주요 고용센터까지의 가중 거리
+#             # RAD: 고속도로 접근 용이도
+#             # TAX: 10,000달러당 재산세율
+#             # PTRATIO: 지역의 교사와 학생수의 비율
+#             # B: 지역의 흑인 거주 비율
+#             # LSTAT: 하위 계층의 비율
+#             # MEDV: 본인 소유의 주택 가격(중앙값)
+# #loading the dataset direclty from sklearn
+# boston = datasets.load_boston()
+# print(type(boston))
+# print(boston.keys())
+# print(boston.data.shape)
+# print(boston.feature_names)
+
+# bos = pd.DataFrame(boston.data, columns = boston.feature_names)     # row,columns 표형태인 데이터로 바꾸는 것
+# bos['PRICE'] = boston.target
+# print(bos)
+# print(bos.isnull().sum())   #print(bos.isna().sum())
+# print(bos.describe())
+
+# sns.set(rc={'figure.figsize':(11.7, 8.27)})
+# plt.hist(bos['PRICE'], bins=30)
+# plt.xlabel("House prices in $1000")
+# # plt.show()
+
+
+# #Created a dataframe without the price col, since we need to see the correlation between the variables
+# correlation_matrix = bos.corr().round(2)
+# sns.heatmap(data=correlation_matrix, annot=True)    #숫자를 그림에 보이려면 annot=True
+# # plt.show()
+
+
+
+
+# plt.figure(figsize=(20,5))
+
+# features = ['LSTAT', 'RM']
+# target = bos['PRICE']
+
+# for i, col in enumerate(features):
+#     plt.subplot(1, len(features), i+1) # 1행2열을 만들고, 첫번째features를 그리고, 그 옆에 두번째features를 그려라
+#     x = bos[col]
+#     y = target
+#     plt.scatter(x, y, marker='o')
+#     plt.title("Variation in House prieces")
+#     plt.xlabel(col)
+#     plt.ylabel('"House prices in $1000"')
+# # plt.show()
+
+
+# # 선형분석 시작?
+# X_rooms = bos.RM        #여기서 RM 대신 타 변수를 넣어서 돌리면 됨
+# y_price = bos.PRICE
+
+# X_rooms = np.array(X_rooms).reshape(-1,1)
+# y_price = np.array(y_price).reshape(-1,1)
+
+# print(X_rooms.shape)
+# print(y_price.shape)
+
+# ######################################
+# # Train / Test 분리
+# X_train_1, X_test_1, Y_train_1, Y_test_1 = train_test_split(X_rooms, y_price, test_size = 0.2, random_state=5)
+# print(X_train_1.shape)
+# print(X_test_1.shape)
+# print(Y_train_1.shape)
+# print(Y_test_1.shape)
+# ######################################
+#     # Sklearn의 Linear regression 클래스
+#         # input parameter
+#             # fit_intercept : 불 값으로, default = True. Intercept(절편) 값을 계산할 것인지 말지를 지정함. 만일 False로 지정하면 Intercept가 사용되지 않고 0으로 지정됨.
+#             # normalize : 불 값으로, 디폴트는 False임. fit_intercept가 False 인 경우에는 이 파라미터가 무시됨. 만일 True이면 회귀를 수행하기 전에 입력 데이터 세트를 정규화 함
+
+#         # Features
+#             # coef_ : fit() 메서드를 수행했을 때 회귀 계수가 배열 형태로 저장하는 속성. Shape는 (Target 값 개수, 피쳐 개수)
+#             # intercept_ : intercept 값\
+
+#     # 다중 공성선 문제(Multi-collinearity problem)
+#         # 모형의 일부 설명 변수가 다른 설명 변수와 상관 정도가 높아, 데이터 분석 시 부정적인 영향을 미치는 현상을 말함.
+#         # -> 어처구니 없는 해석을 하게 만듬
+#             # 피쳐 간의 상관관계가 매우 높은 경우 분산이 매우 커져서 오류에 매우 민감해짐. 이러한 현상을 다중 공선성(Multi-collinearity)
+#             # RMSE(Root Mean Squared Error) :MSE 값은 오류의 제곱을 구하므로 실제 오류 평균보다 더 커지는 특성이 있으므로 MSE에 루트를 씌움.
+#         # R2 = 예측값Variance / 실제값Varivance
+
+# reg = LinearRegression()
+# reg.fit(X_train_1, Y_train_1)     #data와 label을 같이 학습을 시킴
+
+# y_train_predict_1 = reg.predict(X_train_1)
+# rmse = (np.sqrt(mean_squared_error(Y_train_1, y_train_predict_1)))
+# r2 = round(reg.score(X_train_1, Y_train_1),2)
+
+# print("The model performance for training set")
+# print("--------------------------------------")
+# print('RMSE is {}'.format(rmse))
+# print('R2 train score is {}'.format(r2))
+# print("\n")
+
+# ##################################Train 끝##################################
+
+# # model evaluation for test set
+# y_pred_1 = reg.predict(X_test_1)
+# rmse_1 = (np.sqrt(mean_squared_error(Y_test_1, y_pred_1)))
+# r2_1 = round(reg.score(X_test_1, Y_test_1),2)
+
+# print("The model performance for training set")
+# print("--------------------------------------")
+# print("Root Mean Squared Error: {}".format(rmse_1))
+# print("R2 test score : {}".format(r2_1))
+# print("\n")
+
+# prediction_space = np.linspace(min(X_rooms), max(X_rooms)).reshape(-1,1) 
+# plt.scatter(X_rooms,y_price)
+# plt.plot(prediction_space, reg.predict(prediction_space), color = 'black', linewidth = 3)
+# plt.ylabel('value of house/1000($)')
+# plt.xlabel('number of rooms')
+# # plt.show()
+
+
+
+
+# #########################모든 변수를 넣고 회귀분석 돌리기######################
+# X = bos.drop('PRICE', axis = 1)
+# y = bos['PRICE']
+
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# reg_all = LinearRegression()
+# reg_all.fit(X_train, y_train)
+
+# # model evaluation for training set
+# y_train_predict = reg_all.predict(X_train)
+# rmse_a = (np.sqrt(mean_squared_error(y_train, y_train_predict)))
+# r2 = round(reg_all.score(X_train, y_train),2)
+# print("The model performance for training set")
+# print("--------------------------------------")
+# print('RMSE is {}'.format(rmse))
+# print('R2 score is {}'.format(r2))
+# print("\n")
+
+# y_pred = reg_all.predict(X_test)
+# rmse = (np.sqrt(mean_squared_error(y_test, y_pred)))
+# r2 = round(reg_all.score(X_test, y_test),2)
+
+# print("The model performance for training set")
+# print("--------------------------------------")
+# print("Root Mean Squared Error: {}".format(rmse))
+# print("R^2: {}".format(r2))
+# print("\n")
+
+# ################# FINISH - Sklearn Linear Regression Tutorial with Boston House Dataset #######################
 
 
 
