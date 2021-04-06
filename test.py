@@ -7,7 +7,7 @@ import sklearn
 
 # print(np.__version__)
 # print(pd.__version__)
-# print(plt.__version__) #.pyplot는 버젼 안나옴
+# # print(plt.__version__) #.pyplot는 버젼 안나옴
 # print(sns.__version__)
 # print(sklearn.__version__)
 
@@ -505,3 +505,26 @@ import sklearn
 # y_pred = knn.predict(X_test)
 # print('테스트 세트에 대한 예측값 :\n {}'.format(y_pred))
 # print('테스트 세트에 대한 정확도 : {:.2f}'.format(np.mean(y_pred == y_test)))
+
+
+
+
+
+
+
+
+
+
+
+# # ---------------------------(Day 19 - 210406)------------------
+
+
+
+
+
+
+
+
+
+
+
