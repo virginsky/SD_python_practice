@@ -754,174 +754,363 @@ import statsmodels.api as sm
 
 # #imports from sklearn library
 
-# from sklearn import datasets
-# from sklearn.linear_model import LinearRegression
-# from sklearn.model_selection import train_test_split, cross_val_score
-# from sklearn.metrics import mean_squared_error
+from sklearn import datasets
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.metrics import mean_squared_error
 
 
 
-# #To plot the graph embedded in the notebook
-# # %matplotlib inline  # VS에서는 필요x
-#         # load_boston의 column 의 의미
-#             # CRIM: 지역별 범죄 발생률
-#             # ZN: 25,000을 초과하는 거주 지역의 비율
-#             # INDUS: 비상업 지역의 넓이 비율
-#             # CHAS: 찰스강에 대한 더미 변수(강의 경계에 위치 여부에 따라 맞으면1, 아니면 0)
-#             # NOX: 일산화질소의 농도
-#             # RM: 거주할 수 있는 방의 개수
-#             # AGE: 1940년 이전에 건축된 소유 주택의 비율
-#             # DIS: 5개 주요 고용센터까지의 가중 거리
-#             # RAD: 고속도로 접근 용이도
-#             # TAX: 10,000달러당 재산세율
-#             # PTRATIO: 지역의 교사와 학생수의 비율
-#             # B: 지역의 흑인 거주 비율
-#             # LSTAT: 하위 계층의 비율
-#             # MEDV: 본인 소유의 주택 가격(중앙값)
-# #loading the dataset direclty from sklearn
+# # #To plot the graph embedded in the notebook
+# # # %matplotlib inline  # VS에서는 필요x
+# #         # load_boston의 column 의 의미
+# #             # CRIM: 지역별 범죄 발생률
+# #             # ZN: 25,000을 초과하는 거주 지역의 비율
+# #             # INDUS: 비상업 지역의 넓이 비율
+# #             # CHAS: 찰스강에 대한 더미 변수(강의 경계에 위치 여부에 따라 맞으면1, 아니면 0)
+# #             # NOX: 일산화질소의 농도
+# #             # RM: 거주할 수 있는 방의 개수
+# #             # AGE: 1940년 이전에 건축된 소유 주택의 비율
+# #             # DIS: 5개 주요 고용센터까지의 가중 거리
+# #             # RAD: 고속도로 접근 용이도
+# #             # TAX: 10,000달러당 재산세율
+# #             # PTRATIO: 지역의 교사와 학생수의 비율
+# #             # B: 지역의 흑인 거주 비율
+# #             # LSTAT: 하위 계층의 비율
+# #             # MEDV: 본인 소유의 주택 가격(중앙값)
+# # #loading the dataset direclty from sklearn
 # boston = datasets.load_boston()
-# print(type(boston))
-# print(boston.keys())
-# print(boston.data.shape)
-# print(boston.feature_names)
+# # print(type(boston))
+# # print(boston.keys())
+# # print(boston.data.shape)
+# # print(boston.feature_names)
 
 # bos = pd.DataFrame(boston.data, columns = boston.feature_names)     # row,columns 표형태인 데이터로 바꾸는 것
 # bos['PRICE'] = boston.target
-# print(bos)
-# print(bos.isnull().sum())   #print(bos.isna().sum())
-# print(bos.describe())
+# # print(bos)
+# # print(bos.isnull().sum())   #print(bos.isna().sum())
+# # print(bos.describe())
 
-# sns.set(rc={'figure.figsize':(11.7, 8.27)})
-# plt.hist(bos['PRICE'], bins=30)
-# plt.xlabel("House prices in $1000")
-# # plt.show()
-
-
-# #Created a dataframe without the price col, since we need to see the correlation between the variables
-# correlation_matrix = bos.corr().round(2)
-# sns.heatmap(data=correlation_matrix, annot=True)    #숫자를 그림에 보이려면 annot=True
-# # plt.show()
+# # sns.set(rc={'figure.figsize':(11.7, 8.27)})
+# # plt.hist(bos['PRICE'], bins=30)
+# # plt.xlabel("House prices in $1000")
+# # # plt.show()
 
 
-
-
-# plt.figure(figsize=(20,5))
-
-# features = ['LSTAT', 'RM']
-# target = bos['PRICE']
-
-# for i, col in enumerate(features):
-#     plt.subplot(1, len(features), i+1) # 1행2열을 만들고, 첫번째features를 그리고, 그 옆에 두번째features를 그려라
-#     x = bos[col]
-#     y = target
-#     plt.scatter(x, y, marker='o')
-#     plt.title("Variation in House prieces")
-#     plt.xlabel(col)
-#     plt.ylabel('"House prices in $1000"')
-# # plt.show()
-
-
-# # 선형분석 시작?
-# X_rooms = bos.RM        #여기서 RM 대신 타 변수를 넣어서 돌리면 됨
-# y_price = bos.PRICE
-
-# X_rooms = np.array(X_rooms).reshape(-1,1)
-# y_price = np.array(y_price).reshape(-1,1)
-
-# print(X_rooms.shape)
-# print(y_price.shape)
-
-# ######################################
-# # Train / Test 분리
-# X_train_1, X_test_1, Y_train_1, Y_test_1 = train_test_split(X_rooms, y_price, test_size = 0.2, random_state=5)
-# print(X_train_1.shape)
-# print(X_test_1.shape)
-# print(Y_train_1.shape)
-# print(Y_test_1.shape)
-# ######################################
-#     # Sklearn의 Linear regression 클래스
-#         # input parameter
-#             # fit_intercept : 불 값으로, default = True. Intercept(절편) 값을 계산할 것인지 말지를 지정함. 만일 False로 지정하면 Intercept가 사용되지 않고 0으로 지정됨.
-#             # normalize : 불 값으로, 디폴트는 False임. fit_intercept가 False 인 경우에는 이 파라미터가 무시됨. 만일 True이면 회귀를 수행하기 전에 입력 데이터 세트를 정규화 함
-
-#         # Features
-#             # coef_ : fit() 메서드를 수행했을 때 회귀 계수가 배열 형태로 저장하는 속성. Shape는 (Target 값 개수, 피쳐 개수)
-#             # intercept_ : intercept 값\
-
-#     # 다중 공성선 문제(Multi-collinearity problem)
-#         # 모형의 일부 설명 변수가 다른 설명 변수와 상관 정도가 높아, 데이터 분석 시 부정적인 영향을 미치는 현상을 말함.
-#         # -> 어처구니 없는 해석을 하게 만듬
-#             # 피쳐 간의 상관관계가 매우 높은 경우 분산이 매우 커져서 오류에 매우 민감해짐. 이러한 현상을 다중 공선성(Multi-collinearity)
-#             # RMSE(Root Mean Squared Error) :MSE 값은 오류의 제곱을 구하므로 실제 오류 평균보다 더 커지는 특성이 있으므로 MSE에 루트를 씌움.
-#         # R2 = 예측값Variance / 실제값Varivance
-
-# reg = LinearRegression()
-# reg.fit(X_train_1, Y_train_1)     #data와 label을 같이 학습을 시킴
-
-# y_train_predict_1 = reg.predict(X_train_1)
-# rmse = (np.sqrt(mean_squared_error(Y_train_1, y_train_predict_1)))
-# r2 = round(reg.score(X_train_1, Y_train_1),2)
-
-# print("The model performance for training set")
-# print("--------------------------------------")
-# print('RMSE is {}'.format(rmse))
-# print('R2 train score is {}'.format(r2))
-# print("\n")
-
-# ##################################Train 끝##################################
-
-# # model evaluation for test set
-# y_pred_1 = reg.predict(X_test_1)
-# rmse_1 = (np.sqrt(mean_squared_error(Y_test_1, y_pred_1)))
-# r2_1 = round(reg.score(X_test_1, Y_test_1),2)
-
-# print("The model performance for training set")
-# print("--------------------------------------")
-# print("Root Mean Squared Error: {}".format(rmse_1))
-# print("R2 test score : {}".format(r2_1))
-# print("\n")
-
-# prediction_space = np.linspace(min(X_rooms), max(X_rooms)).reshape(-1,1) 
-# plt.scatter(X_rooms,y_price)
-# plt.plot(prediction_space, reg.predict(prediction_space), color = 'black', linewidth = 3)
-# plt.ylabel('value of house/1000($)')
-# plt.xlabel('number of rooms')
-# # plt.show()
+# # #Created a dataframe without the price col, since we need to see the correlation between the variables
+# # correlation_matrix = bos.corr().round(2)
+# # sns.heatmap(data=correlation_matrix, annot=True)    #숫자를 그림에 보이려면 annot=True
+# # # plt.show()
 
 
 
 
-# #########################모든 변수를 넣고 회귀분석 돌리기######################
+# # plt.figure(figsize=(20,5))
+
+# # features = ['LSTAT', 'RM']
+# # target = bos['PRICE']
+
+# # for i, col in enumerate(features):
+# #     plt.subplot(1, len(features), i+1) # 1행2열을 만들고, 첫번째features를 그리고, 그 옆에 두번째features를 그려라
+# #     x = bos[col]
+# #     y = target
+# #     plt.scatter(x, y, marker='o')
+# #     plt.title("Variation in House prieces")
+# #     plt.xlabel(col)
+# #     plt.ylabel('"House prices in $1000"')
+# # # plt.show()
+
+
+# # # 선형분석 시작?
+# # X_rooms = bos.RM        #여기서 RM 대신 타 변수를 넣어서 돌리면 됨
+# # y_price = bos.PRICE
+
+# # X_rooms = np.array(X_rooms).reshape(-1,1)
+# # y_price = np.array(y_price).reshape(-1,1)
+
+# # print(X_rooms.shape)
+# # print(y_price.shape)
+
+# # ######################################
+# # # Train / Test 분리
+# # X_train_1, X_test_1, Y_train_1, Y_test_1 = train_test_split(X_rooms, y_price, test_size = 0.2, random_state=5)
+# # print(X_train_1.shape)
+# # print(X_test_1.shape)
+# # print(Y_train_1.shape)
+# # print(Y_test_1.shape)
+# # ######################################
+# #     # Sklearn의 Linear regression 클래스
+# #         # input parameter
+# #             # fit_intercept : 불 값으로, default = True. Intercept(절편) 값을 계산할 것인지 말지를 지정함. 만일 False로 지정하면 Intercept가 사용되지 않고 0으로 지정됨.
+# #             # normalize : 불 값으로, 디폴트는 False임. fit_intercept가 False 인 경우에는 이 파라미터가 무시됨. 만일 True이면 회귀를 수행하기 전에 입력 데이터 세트를 정규화 함
+
+# #         # Features
+# #             # coef_ : fit() 메서드를 수행했을 때 회귀 계수가 배열 형태로 저장하는 속성. Shape는 (Target 값 개수, 피쳐 개수)
+# #             # intercept_ : intercept 값\
+
+# #     # 다중 공성선 문제(Multi-collinearity problem)
+# #         # 모형의 일부 설명 변수가 다른 설명 변수와 상관 정도가 높아, 데이터 분석 시 부정적인 영향을 미치는 현상을 말함.
+# #         # -> 어처구니 없는 해석을 하게 만듬
+# #             # 피쳐 간의 상관관계가 매우 높은 경우 분산이 매우 커져서 오류에 매우 민감해짐. 이러한 현상을 다중 공선성(Multi-collinearity)
+# #             # RMSE(Root Mean Squared Error) :MSE 값은 오류의 제곱을 구하므로 실제 오류 평균보다 더 커지는 특성이 있으므로 MSE에 루트를 씌움.
+# #         # R2 = 예측값Variance / 실제값Varivance
+
+# # reg = LinearRegression()
+# # reg.fit(X_train_1, Y_train_1)     #data와 label을 같이 학습을 시킴
+
+# # y_train_predict_1 = reg.predict(X_train_1)
+# # rmse = (np.sqrt(mean_squared_error(Y_train_1, y_train_predict_1)))
+# # r2 = round(reg.score(X_train_1, Y_train_1),2)
+
+# # print("The model performance for training set")
+# # print("--------------------------------------")
+# # print('RMSE is {}'.format(rmse))
+# # print('R2 train score is {}'.format(r2))
+# # print("\n")
+
+# # ##################################Train 끝##################################
+
+# # # model evaluation for test set
+# # y_pred_1 = reg.predict(X_test_1)
+# # rmse_1 = (np.sqrt(mean_squared_error(Y_test_1, y_pred_1)))
+# # r2_1 = round(reg.score(X_test_1, Y_test_1),2)
+
+# # print("The model performance for training set")
+# # print("--------------------------------------")
+# # print("Root Mean Squared Error: {}".format(rmse_1))
+# # print("R2 test score : {}".format(r2_1))
+# # print("\n")
+
+# # prediction_space = np.linspace(min(X_rooms), max(X_rooms)).reshape(-1,1) 
+# # plt.scatter(X_rooms,y_price)
+# # plt.plot(prediction_space, reg.predict(prediction_space), color = 'black', linewidth = 3)
+# # plt.ylabel('value of house/1000($)')
+# # plt.xlabel('number of rooms')
+# # # plt.show()
+
+
+
+
+# # #########################모든 변수를 넣고 회귀분석 돌리기######################
+# # #################### Regression Model for All the variables######################
+# # X = bos.drop('PRICE', axis = 1)
+# # y = bos['PRICE']
+
+# # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# # reg_all = LinearRegression()
+# # reg_all.fit(X_train, y_train)
+
+# # # model evaluation for training set
+# # y_train_predict = reg_all.predict(X_train)
+# # rmse_a = (np.sqrt(mean_squared_error(y_train, y_train_predict)))
+# # r2 = round(reg_all.score(X_train, y_train),2)
+# # print("The model performance for training set")
+# # print("--------------------------------------")
+# # print('RMSE is {}'.format(rmse))
+# # print('R2 score is {}'.format(r2))
+# # print("\n")
+
+# # y_pred = reg_all.predict(X_test)
+# # rmse = (np.sqrt(mean_squared_error(y_test, y_pred)))
+# # r2 = round(reg_all.score(X_test, y_test),2)
+
+# # print("The model performance for training set")
+# # print("--------------------------------------")
+# # print("Root Mean Squared Error: {}".format(rmse))
+# # print("R^2: {}".format(r2))
+# # print("\n")
+
+# # ################# FINISH - Sklearn Linear Regression Tutorial with Boston House Dataset #######################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # # ---------------------------(Day 20 - 210407)------------------
+
+
+
+
+
+
+
+
+
+
+# # Regression_210406.ipynb 파일 계속
+# # import statsmodels.api as sm
+# # import statsmodels.formula.api as smf
 # X = bos.drop('PRICE', axis = 1)
 # y = bos['PRICE']
+# X_constant = sm.add_constant(X)
 
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# reg_all = LinearRegression()
-# reg_all.fit(X_train, y_train)
-
-# # model evaluation for training set
-# y_train_predict = reg_all.predict(X_train)
-# rmse_a = (np.sqrt(mean_squared_error(y_train, y_train_predict)))
-# r2 = round(reg_all.score(X_train, y_train),2)
-# print("The model performance for training set")
-# print("--------------------------------------")
-# print('RMSE is {}'.format(rmse))
-# print('R2 score is {}'.format(r2))
-# print("\n")
-
-# y_pred = reg_all.predict(X_test)
-# rmse = (np.sqrt(mean_squared_error(y_test, y_pred)))
-# r2 = round(reg_all.score(X_test, y_test),2)
-
-# print("The model performance for training set")
-# print("--------------------------------------")
-# print("Root Mean Squared Error: {}".format(rmse))
-# print("R^2: {}".format(r2))
-# print("\n")
-
-# ################# FINISH - Sklearn Linear Regression Tutorial with Boston House Dataset #######################
+# #  요약통계량 OLD 방법 -> R^2이용해도 ok
+# model_1 = sm.OLS(y, X_constant)
+# lin_reg = model_1.fit()
+# # print(lin_reg.summary())
 
 
 
 
+
+
+
+################## 사이킷런 LinearRegression을 이용한 보스턴 주택 가격 예측 #################
+# import numpy as np
+# import matplotlib.pyplot as plt
+# import pandas as pd
+# import seaborn as sns
+# from scipy import stats
+# from sklearn.datasets import load_boston
+
+# # boston 데이터셋 로드
+# boston = load_boston()
+
+# # boston 데이터셋 DataFrame 변환
+# bostonDF = pd.DataFrame(boston.data, columns = boston.feature_names)
+
+# # boston dataset의 target array는 주택가격임. 이를 PRICE 컬럼으로 DataFrame에 추가
+# bostonDF['PRICE'] = boston.target
+# # print(bostonDF.shape)
+# # print(bostonDF.head())
+
+# # 2개의 행과 4개의 열을 가진 subplots를 이용, axs는 4x2개의 ax를 가짐.
+# fog, axs = plt.subplots(figsize = (16,8), ncols=4, nrows=2)
+# Im_features = ['RM', 'ZN', 'INDUS', 'NOX', 'AGE', 'PTRATIO', 'LSTAT', 'RAD']
+# for i, feature in enumerate(Im_features):
+#     row = int(i/4)
+#     col = i%4
+#     #시본의 regplot를 이용해 산점도와 선형회귀직선을 함께 표현
+#     sns.regplot(x=feature, y='PRICE', data=bostonDF, ax=axs[row][col])
+# # plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+############ Polynomial Regression과 오버피팅/언더피팅 이해 ################
+    # Polynomial Regression 이해
+    # 단항 피처  [x1,x2] 를 degree = 2, 즉 2차 다항 피차로 변환한다면?  
+    # (x1+x2)2 의 식 전개에 대응되는  [1,x1,x2,x1x2,x1^2,x2^2] 의 다항 피처들로 변환
+
+    # 1차 단항 피처들의 값이  [x1,x2]=[0,1]  일 경우
+    # 2차 다항 피처들의  [1,x1=0,x2=1,x1x2=0,x1^2=0,x2^2=1] 형태인 [1,0,1,0,0,1]로 변환
+
+from sklearn.preprocessing import PolynomialFeatures
+# import numpy as np
+
+
+
+    # K-fold cross validation       출처: https://3months.tistory.com/321 [Deep Play]
+    # K 겹 교차 검증(Cross validation)이란 통계학에서 모델을 "평가" 하는 한 가지 방법입니다. 
+    # 소위 hold-out validation 이라 불리는 전체 데이터의 일부를 validation set 으로 사용해 
+    # 모델 성능을 평가하는 것의 문제는 데이터셋의 크기가 작은 경우 테스트셋에 대한 
+    # 성능 평가의 신뢰성이 떨어지게 된다는 것입니다. 만약 테스트셋을 어떻게 잡느냐에 따라 성능이 다르면, 
+    # 우연의 효과로 인해 모델 평가 지표에 편향이 생기게 됩니다.
+
+    # 이를 해결하기 위해 K-겹 교차 검증은 모든 데이터가 최소 한 번은 테스트셋으로 쓰이도록 합니다.
+    # 아래의 그림을 보면, 데이터를 5개로 쪼개 매번 테스트셋을 바꿔나가는 것을 볼 수 있습니다. 
+    # 첫 번째 Iteration에서는 BCDE를 트레이닝 셋으로, A를 테스트셋으로 설정한 후, 성능을 평가합니다. 
+    # 두 번째 Iteration에서는 ACDE를 트레이닝셋으로, B를 테스트셋으로하여 성능을 평가합니다. 
+    # 그러면 총 5개의 성능 평가지표가 생기게 되는데, 
+    # 보통 이 값들을 평균을 내어 모델의 성능을 평가하게 됩니다. 
+    # (아래 데이터는 모두 사실은 트레이닝 데이터입니다. 
+    # Iteration이라는 상황안에서만 테스트셋이 되는 것입니다.) 
+    # 이 때, 데이터를 몇 개로 쪼갰느냐가 K-겹 교차검증의 K가 됩니다.
+
+
+
+
+
+
+########################### Kaggle _ Titanic data practice###############################
+train = pd.read_csv('C:/Users/sundooedu/Documents/GitHub/SD_python_practice/machinelearning/Regression/Kaggle_titanic/train.csv')
+test = pd.read_csv('C:/Users/sundooedu/Documents/GitHub/SD_python_practice/machinelearning/Regression/Kaggle_titanic/test.csv')
+print(train.info())
+print(train.describe())
+print(train.isna().sum())
+def bar_chart(feature):
+    survived = train[train['Survived']==1][feature].value_counts()   #생존자를 카운트
+    dead =  train[train['Survived']==0][feature].value_counts()      #사망자를 카운트
+    df = pd.DataFrame([survived,dead])      #[생존자,사망자]를 DataFrame
+    df.index = ['Survived', 'Dead'] #index화
+    df.plot(kind = 'bar', stacked = True, figsize = (10,5))         # stacked = True : 데이터를 쌓아서 보여줌
+
+bar_chart('Sex')
+bar_chart('Pclass')
+# plt.show()
+
+train_test_data = [train,test]
+
+for dataset in train_test_data:
+  dataset['Title'] = dataset['Name'].str.extract('([A-Za-z]+)\.',expand = False)
+
+# one-hot encoding
+title_mapping = {'Mr':0, "Miss":1, 'Mrs':2,'Master':3,
+                 'Dr':3,'Rev':3,'Col':3,'Major':3,'Mlle':3,'Ms':3,'Sir':3,'Don':3,'Countess':3,
+                 'Capt':3,'Lady':3,'Jonkheer':3,'Mme':3}
+for dataset in train_test_data:
+  dataset['Title'] = dataset['Title'].map(title_mapping)
+bar_chart('Title')
+# plt.show()
+
+# 쓸모없는 데이터 정리
+train.drop('Name',axis = 1, inplace = True)
+test.drop('Name',axis = 1, inplace = True)
+train.drop('Ticket',axis = 1, inplace = True)
+test.drop('Ticket',axis = 1, inplace = True)
+train.drop('Cabin',axis = 1, inplace = True)
+test.drop('Cabin',axis = 1, inplace = True)
+train.drop('Embarked',axis = 1, inplace = True)
+test.drop('Embarked',axis = 1, inplace = True)
+
+
+
+# 성별 인코딩
+sex_mapping = {'male':0,'female':1}
+for dataset in train_test_data:
+  dataset['Sex'] = dataset['Sex'].map(sex_mapping)
+bar_chart('Sex')
+print(train.head())     #이제 더이상 문자열데이터 없음
+
+#missing Age를 각 Title에 대한 연령의 중간값으로 채움(Mr,Mrs,Miss,others)
+train['Age'].fillna(train.groupby('Title')['Age'].transform('median'),inplace = True)
+test['Age'].fillna(test.groupby('Title')['Age'].transform('median'),inplace = True)
+print(train.isna().sum())   #이제 빈값 없음
+
+# import matplotlib.pyplot as plt
+# import seaborn as sns
+
+#변수의 분포를 시각화하거나, 여러 변수들 사이의 상관관계를 여러개의 그래프로 쪼개서 표현할때 유용함
+# FeactGrid는 Colum,row, hue를 통한 의미구분을 통해 총 3차원까지 구현이 가능함.
+#aspect : subplot의 세로 대비 가로의 비율.
+facet = sns.FacetGrid(train, hue ='Survived', aspect=4)
+facet.map(sns.kdeplot,'Age',shade = True) # kde : 이차원 밀집도 그래프
+facet.set(xlim=(0,train['Age'].max()))
+facet.add_legend()
+sns.axes_style('dark')
+
+plt.show()
+
+# https://colab.research.google.com/drive/1_j49hszgmW0uqVC7_whBlxDf6nRunPgY?usp=sharing
+# 이거보고 회귀분석 다시 해보자
