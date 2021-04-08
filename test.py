@@ -1008,109 +1008,428 @@ from sklearn.metrics import mean_squared_error
 
 
 
-############ Polynomial Regression과 오버피팅/언더피팅 이해 ################
-    # Polynomial Regression 이해
-    # 단항 피처  [x1,x2] 를 degree = 2, 즉 2차 다항 피차로 변환한다면?  
-    # (x1+x2)2 의 식 전개에 대응되는  [1,x1,x2,x1x2,x1^2,x2^2] 의 다항 피처들로 변환
+# ############ Polynomial Regression과 오버피팅/언더피팅 이해 ################
+#     # Polynomial Regression 이해
+#     # 단항 피처  [x1,x2] 를 degree = 2, 즉 2차 다항 피차로 변환한다면?  
+#     # (x1+x2)2 의 식 전개에 대응되는  [1,x1,x2,x1x2,x1^2,x2^2] 의 다항 피처들로 변환
 
-    # 1차 단항 피처들의 값이  [x1,x2]=[0,1]  일 경우
-    # 2차 다항 피처들의  [1,x1=0,x2=1,x1x2=0,x1^2=0,x2^2=1] 형태인 [1,0,1,0,0,1]로 변환
+#     # 1차 단항 피처들의 값이  [x1,x2]=[0,1]  일 경우
+#     # 2차 다항 피처들의  [1,x1=0,x2=1,x1x2=0,x1^2=0,x2^2=1] 형태인 [1,0,1,0,0,1]로 변환
 
-from sklearn.preprocessing import PolynomialFeatures
-# import numpy as np
-
-
-
-    # K-fold cross validation       출처: https://3months.tistory.com/321 [Deep Play]
-    # K 겹 교차 검증(Cross validation)이란 통계학에서 모델을 "평가" 하는 한 가지 방법입니다. 
-    # 소위 hold-out validation 이라 불리는 전체 데이터의 일부를 validation set 으로 사용해 
-    # 모델 성능을 평가하는 것의 문제는 데이터셋의 크기가 작은 경우 테스트셋에 대한 
-    # 성능 평가의 신뢰성이 떨어지게 된다는 것입니다. 만약 테스트셋을 어떻게 잡느냐에 따라 성능이 다르면, 
-    # 우연의 효과로 인해 모델 평가 지표에 편향이 생기게 됩니다.
-
-    # 이를 해결하기 위해 K-겹 교차 검증은 모든 데이터가 최소 한 번은 테스트셋으로 쓰이도록 합니다.
-    # 아래의 그림을 보면, 데이터를 5개로 쪼개 매번 테스트셋을 바꿔나가는 것을 볼 수 있습니다. 
-    # 첫 번째 Iteration에서는 BCDE를 트레이닝 셋으로, A를 테스트셋으로 설정한 후, 성능을 평가합니다. 
-    # 두 번째 Iteration에서는 ACDE를 트레이닝셋으로, B를 테스트셋으로하여 성능을 평가합니다. 
-    # 그러면 총 5개의 성능 평가지표가 생기게 되는데, 
-    # 보통 이 값들을 평균을 내어 모델의 성능을 평가하게 됩니다. 
-    # (아래 데이터는 모두 사실은 트레이닝 데이터입니다. 
-    # Iteration이라는 상황안에서만 테스트셋이 되는 것입니다.) 
-    # 이 때, 데이터를 몇 개로 쪼갰느냐가 K-겹 교차검증의 K가 됩니다.
+# from sklearn.preprocessing import PolynomialFeatures
+# # import numpy as np
 
 
+
+#     # K-fold cross validation       출처: https://3months.tistory.com/321 [Deep Play]
+#     # K 겹 교차 검증(Cross validation)이란 통계학에서 모델을 "평가" 하는 한 가지 방법입니다. 
+#     # 소위 hold-out validation 이라 불리는 전체 데이터의 일부를 validation set 으로 사용해 
+#     # 모델 성능을 평가하는 것의 문제는 데이터셋의 크기가 작은 경우 테스트셋에 대한 
+#     # 성능 평가의 신뢰성이 떨어지게 된다는 것입니다. 만약 테스트셋을 어떻게 잡느냐에 따라 성능이 다르면, 
+#     # 우연의 효과로 인해 모델 평가 지표에 편향이 생기게 됩니다.
+
+#     # 이를 해결하기 위해 K-겹 교차 검증은 모든 데이터가 최소 한 번은 테스트셋으로 쓰이도록 합니다.
+#     # 아래의 그림을 보면, 데이터를 5개로 쪼개 매번 테스트셋을 바꿔나가는 것을 볼 수 있습니다. 
+#     # 첫 번째 Iteration에서는 BCDE를 트레이닝 셋으로, A를 테스트셋으로 설정한 후, 성능을 평가합니다. 
+#     # 두 번째 Iteration에서는 ACDE를 트레이닝셋으로, B를 테스트셋으로하여 성능을 평가합니다. 
+#     # 그러면 총 5개의 성능 평가지표가 생기게 되는데, 
+#     # 보통 이 값들을 평균을 내어 모델의 성능을 평가하게 됩니다. 
+#     # (아래 데이터는 모두 사실은 트레이닝 데이터입니다. 
+#     # Iteration이라는 상황안에서만 테스트셋이 되는 것입니다.) 
+#     # 이 때, 데이터를 몇 개로 쪼갰느냐가 K-겹 교차검증의 K가 됩니다.
 
 
 
 
-########################### Kaggle _ Titanic data practice###############################
-train = pd.read_csv('C:/Users/sundooedu/Documents/GitHub/SD_python_practice/machinelearning/Regression/Kaggle_titanic/train.csv')
-test = pd.read_csv('C:/Users/sundooedu/Documents/GitHub/SD_python_practice/machinelearning/Regression/Kaggle_titanic/test.csv')
-print(train.info())
-print(train.describe())
-print(train.isna().sum())
-def bar_chart(feature):
-    survived = train[train['Survived']==1][feature].value_counts()   #생존자를 카운트
-    dead =  train[train['Survived']==0][feature].value_counts()      #사망자를 카운트
-    df = pd.DataFrame([survived,dead])      #[생존자,사망자]를 DataFrame
-    df.index = ['Survived', 'Dead'] #index화
-    df.plot(kind = 'bar', stacked = True, figsize = (10,5))         # stacked = True : 데이터를 쌓아서 보여줌
 
-bar_chart('Sex')
-bar_chart('Pclass')
+
+# ########################### Kaggle _ Titanic data practice###############################
+# train = pd.read_csv('C:/Users/sundooedu/Documents/GitHub/SD_python_practice/machinelearning/Regression/Kaggle_titanic/train.csv')
+# test = pd.read_csv('C:/Users/sundooedu/Documents/GitHub/SD_python_practice/machinelearning/Regression/Kaggle_titanic/test.csv')
+# print(train.info())
+# print(train.describe())
+# print(train.isna().sum())
+# def bar_chart(feature):
+#     survived = train[train['Survived']==1][feature].value_counts()   #생존자를 카운트
+#     dead =  train[train['Survived']==0][feature].value_counts()      #사망자를 카운트
+#     df = pd.DataFrame([survived,dead])      #[생존자,사망자]를 DataFrame
+#     df.index = ['Survived', 'Dead'] #index화
+#     df.plot(kind = 'bar', stacked = True, figsize = (10,5))         # stacked = True : 데이터를 쌓아서 보여줌
+
+# bar_chart('Sex')
+# bar_chart('Pclass')
+# # plt.show()
+
+# train_test_data = [train,test]
+
+# for dataset in train_test_data:
+#   dataset['Title'] = dataset['Name'].str.extract('([A-Za-z]+)\.',expand = False)
+
+# # one-hot encoding
+# title_mapping = {'Mr':0, "Miss":1, 'Mrs':2,'Master':3,
+#                  'Dr':3,'Rev':3,'Col':3,'Major':3,'Mlle':3,'Ms':3,'Sir':3,'Don':3,'Countess':3,
+#                  'Capt':3,'Lady':3,'Jonkheer':3,'Mme':3}
+# for dataset in train_test_data:
+#   dataset['Title'] = dataset['Title'].map(title_mapping)
+# bar_chart('Title')
+# # plt.show()
+
+# # 쓸모없는 데이터 정리
+# train.drop('Name',axis = 1, inplace = True)
+# test.drop('Name',axis = 1, inplace = True)
+# train.drop('Ticket',axis = 1, inplace = True)
+# test.drop('Ticket',axis = 1, inplace = True)
+# train.drop('Cabin',axis = 1, inplace = True)
+# test.drop('Cabin',axis = 1, inplace = True)
+# train.drop('Embarked',axis = 1, inplace = True)
+# test.drop('Embarked',axis = 1, inplace = True)
+
+
+
+# # 성별 인코딩
+# sex_mapping = {'male':0,'female':1}
+# for dataset in train_test_data:
+#   dataset['Sex'] = dataset['Sex'].map(sex_mapping)
+# bar_chart('Sex')
+# print(train.head())     #이제 더이상 문자열데이터 없음
+
+# #missing Age를 각 Title에 대한 연령의 중간값으로 채움(Mr,Mrs,Miss,others)
+# train['Age'].fillna(train.groupby('Title')['Age'].transform('median'),inplace = True)
+# test['Age'].fillna(test.groupby('Title')['Age'].transform('median'),inplace = True)
+# print(train.isna().sum())   #이제 빈값 없음
+
+# # import matplotlib.pyplot as plt
+# # import seaborn as sns
+
+# #변수의 분포를 시각화하거나, 여러 변수들 사이의 상관관계를 여러개의 그래프로 쪼개서 표현할때 유용함
+# # FeactGrid는 Colum,row, hue를 통한 의미구분을 통해 총 3차원까지 구현이 가능함.
+# #aspect : subplot의 세로 대비 가로의 비율.
+# facet = sns.FacetGrid(train, hue ='Survived', aspect=4)
+# facet.map(sns.kdeplot,'Age',shade = True) # kde : 이차원 밀집도 그래프
+# facet.set(xlim=(0,train['Age'].max()))
+# facet.add_legend()
+# sns.axes_style('dark')
+
 # plt.show()
 
-train_test_data = [train,test]
-
-for dataset in train_test_data:
-  dataset['Title'] = dataset['Name'].str.extract('([A-Za-z]+)\.',expand = False)
-
-# one-hot encoding
-title_mapping = {'Mr':0, "Miss":1, 'Mrs':2,'Master':3,
-                 'Dr':3,'Rev':3,'Col':3,'Major':3,'Mlle':3,'Ms':3,'Sir':3,'Don':3,'Countess':3,
-                 'Capt':3,'Lady':3,'Jonkheer':3,'Mme':3}
-for dataset in train_test_data:
-  dataset['Title'] = dataset['Title'].map(title_mapping)
-bar_chart('Title')
-# plt.show()
-
-# 쓸모없는 데이터 정리
-train.drop('Name',axis = 1, inplace = True)
-test.drop('Name',axis = 1, inplace = True)
-train.drop('Ticket',axis = 1, inplace = True)
-test.drop('Ticket',axis = 1, inplace = True)
-train.drop('Cabin',axis = 1, inplace = True)
-test.drop('Cabin',axis = 1, inplace = True)
-train.drop('Embarked',axis = 1, inplace = True)
-test.drop('Embarked',axis = 1, inplace = True)
+# # https://colab.research.google.com/drive/1_j49hszgmW0uqVC7_whBlxDf6nRunPgY?usp=sharing
+# # 이거보고 회귀분석 다시 해보자
 
 
 
-# 성별 인코딩
-sex_mapping = {'male':0,'female':1}
-for dataset in train_test_data:
-  dataset['Sex'] = dataset['Sex'].map(sex_mapping)
-bar_chart('Sex')
-print(train.head())     #이제 더이상 문자열데이터 없음
 
-#missing Age를 각 Title에 대한 연령의 중간값으로 채움(Mr,Mrs,Miss,others)
-train['Age'].fillna(train.groupby('Title')['Age'].transform('median'),inplace = True)
-test['Age'].fillna(test.groupby('Title')['Age'].transform('median'),inplace = True)
-print(train.isna().sum())   #이제 빈값 없음
 
-# import matplotlib.pyplot as plt
-# import seaborn as sns
 
-#변수의 분포를 시각화하거나, 여러 변수들 사이의 상관관계를 여러개의 그래프로 쪼개서 표현할때 유용함
-# FeactGrid는 Colum,row, hue를 통한 의미구분을 통해 총 3차원까지 구현이 가능함.
-#aspect : subplot의 세로 대비 가로의 비율.
-facet = sns.FacetGrid(train, hue ='Survived', aspect=4)
-facet.map(sns.kdeplot,'Age',shade = True) # kde : 이차원 밀집도 그래프
-facet.set(xlim=(0,train['Age'].max()))
-facet.add_legend()
-sns.axes_style('dark')
 
-plt.show()
 
-# https://colab.research.google.com/drive/1_j49hszgmW0uqVC7_whBlxDf6nRunPgY?usp=sharing
-# 이거보고 회귀분석 다시 해보자
+
+
+
+
+
+
+# # # ---------------------------(Day 21 - 210408)------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # 회귀분석 실습 2 - 공공 자전거 수요 예측(Bike Sharing Demand)
+# df_train = pd.read_csv('C:/Users/sundooedu/Documents/GitHub/SD_python_practice/machinelearning/Regression/Kaggle_BikeSharing/train.csv')
+# df_test = pd.read_csv('C:/Users/sundooedu/Documents/GitHub/SD_python_practice/machinelearning/Regression/Kaggle_BikeSharing/test.csv')
+# # print(df_train.head())
+# # print(df_train.info())
+# # print(df_train.describe())
+# # print(df_train.isna().sum())
+
+
+# # 타입 확인 결과 날짜 데이터가 object 타입.
+# # 날짜 데이터를 보다 쉽게 조회하기 위해 datetime으로 변경 함
+# # 시계열데이터에 slicing이 가능하게 함
+# df_train_1 = df_train.copy() 
+# df_test_1 = df_test.copy()
+
+# df_train_1['datetime'] = pd.to_datetime(df_train_1['datetime'])
+# # print(df_train_1.dtypes)
+
+# # print(df_train_1.isna().sum())
+# # print(df_train_1.isnull().sum)
+
+# # 날짜라는 시계열이기 때문에 선형회귀는 불가
+# # 왜냐하면, 선형회귀는 정수형 혹은 실수형 데이터만 다루기 때문에
+# # 날짜 데이터를 정수형태로 변환하고 새로운 feature를 생성
+# df_train_1['year'] = df_train_1['datetime'].dt.year
+# df_train_1['month'] = df_train_1['datetime'].dt.month
+# df_train_1['day'] = df_train_1['datetime'].dt.day
+# df_train_1['hour'] = df_train_1['datetime'].dt.hour
+# df_train_1['minute'] = df_train_1['datetime'].dt.minute
+# df_train_1['second'] = df_train_1['datetime'].dt.second
+
+# #요일 데이터 -일요일은 0
+# df_train_1['dayofweek'] = df_train_1['datetime'].dt.dayofweek
+# # print(df_train_1)
+# # print(df_train_1.describe())
+
+# # figure, ((ax1, ax2, ax3),(ax4, ax5,ax6))=plt.subplots(nrows=2,ncols=3)
+# # figure.set_size_inches(18,8)
+
+# # sns.barplot(data=df_train_1, x="year", y="count", ax=ax1)
+# # sns.barplot(data=df_train_1, x="month", y="count", ax=ax2)
+# # sns.barplot(data=df_train_1, x="day", y="count", ax=ax3)
+# # sns.barplot(data=df_train_1, x="hour", y="count", ax=ax4)
+# # sns.barplot(data=df_train_1, x="minute", y="count", ax=ax5)
+# # sns.barplot(data=df_train_1, x="second", y="count", ax=ax6)
+
+# # ax1.set(ylabel='Count', title ="Year rental amount")
+# # ax2.set(ylabel='Count', title ="Month rental amount")
+# # ax3.set(ylabel='Count', title ="Day rental amount")
+# # ax4.set(ylabel='Count', title ="Hour rental amount")
+# # # plt.show()
+# # # Month rental amount을 보면, 겨울로 분리되는 12월의 경우 초봄인 3~4월의 대여량과 비슷하다는 점이었다. 워싱턴의 날씨 변화는 우리나라의 사계절과 비슷하다.
+# # # 또한 hour 파트에서 아침7시와 저녁 6~7시의 수요량이 다른 시간대들과 비교했을 때 굉장히 높은 것을 알 수 있다. 이는 출퇴근길에 자전거를 많이 이용하는 사람들이 많다고 예측해 볼 수 있다. (주말과 나눠서 보는 것이 필요하다.)
+# # # 일별 대여량은 1일부터 19일까지만 있고 나머지 날짜의 경우는 test데이터에 들어가있다. 따라서 이 변수는 피쳐로 사용하면 안 된다!
+
+
+
+# # fig, axes = plt.subplots(nrows=2, ncols=2)
+# # fig.set_size_inches(12,10)
+# # sns.boxplot(data=df_train_1, y="count", orient= "v", ax=axes[0][0])
+# # sns.boxplot(data=df_train_1, y="count", x = "season",orient= "v", ax=axes[0][1])
+# # sns.boxplot(data=df_train_1, y="count", x="hour",orient= "v", ax=axes[1][0])
+# # sns.boxplot(data=df_train_1, y="count", x="workingday",orient= "v", ax=axes[1][1])
+
+# # axes[0][0].set(ylabel='Count',title="Rental amount")
+# # axes[0][1].set(xlabel='Season',ylabel='Count',title="Seasonal Rental amount")
+# # axes[1][0].set(xlabel='Hour of The Day',ylabel='Count',title="Hour Rental amount")
+# # axes[1][1].set(xlabel='Working Day',ylabel='Count',title="Working or not Rental amount")
+# # plt.show()
+# # # 위 그래프를 보면 대여량은 특정 기간에 머물러 있고 특히 근무일이 아닐 때 대여량이 더 많은 것을 알 수 있다.
+
+
+
+# # fig, (ax1,ax2,ax3,ax4,ax5)=plt.subplots(nrows=5)
+# # fig.set_size_inches(18,25)
+
+# # sns.pointplot(data=df_train_1, x="hour",y="count",ax=ax1)
+# # sns.pointplot(data=df_train_1, x="hour",y="count", hue="workingday",ax=ax2)
+# # sns.pointplot(data=df_train_1, x="hour",y="count", hue="dayofweek",ax=ax3)
+# # sns.pointplot(data=df_train_1, x="hour",y="count", hue="weather",ax=ax4)
+# # sns.pointplot(data=df_train_1, x="hour",y="count", hue="season",ax=ax5)
+# # plt.show()
+
+
+
+# # # corrMatt = train[["temp","atemp","casual","registered","humidity","windspeed","count"]]
+# # corrMatt = df_train_1.corr()
+# # print(corrMatt)
+# # mask =np.array(corrMatt)
+# # #Return the indices for the upper-triangle of arr.
+# # mask[np.tril_indices_from(mask)]=False
+
+# # fig,ax = plt.subplots()
+# # fig.set_size_inches(20,10)
+# # sns.heatmap(corrMatt, mask=mask,vmax=.8,square= True, annot=True)
+# # plt.show()
+# # # temp, humidity, windspeed는 상관관계가 거의 없다.
+# # # registered, casual는 상관관계가 높다!
+# # # atemp와 temp는 0.98로 상관관계가 높지만 온도와 체감온도로 피쳐로 사용하기에 적합하지 않을 수 있다.
+
+
+
+
+# # # regplot으로 산점도 plot을 그림
+# # fig,(ax1,ax2,ax3) = plt.subplots(ncols=3)
+# # fig.set_size_inches(12,5)
+# # sns.regplot(x="temp",y="count",data=df_train_1, ax=ax1)
+# # sns.regplot(x="windspeed",y="count",data=df_train_1, ax=ax2)
+# # sns.regplot(x="humidity",y="count",data=df_train_1, ax=ax3)
+# # plt.show()
+# # # windspeed의 경우 0에 숫자가 몰려 있는 것으로 보아, 아마도 관측되지 않은 수치에 대해 0으로 기록된 것이 아닐까 추측한다.
+
+
+
+
+
+# # #월별 데이터 모아보기
+# def concatenate_year_month(datetime):
+#     return "{0}-{1}".format(datetime.year, datetime.month)
+# df_train_1["year_month"] = df_train_1["datetime"].apply(concatenate_year_month)
+# # print(df_train_1.shape)
+# df_train_1[["datetime", "year_month"]].head()
+
+# # fig, (ax1, ax2) =plt.subplots(nrows=1,ncols=2)
+# # fig.set_size_inches(18,4)
+
+# # sns.barplot(data=df_train_1, x="year",y="count",ax=ax1)
+# # sns.barplot(data=df_train_1, x="month",y="count",ax=ax2)
+
+# # fig, ax3 = plt.subplots(nrows=1, ncols=1)
+# # fig.set_size_inches(18,4)
+
+# # sns.barplot(data=df_train_1, x="year_month",y="count",ax=ax3)
+# # plt.show()
+# # 분석 결과 : 2011년보다 2012년에 대여량이 더 많다.
+
+
+
+
+
+
+# # 이상치 처리
+
+# # 방법1) IQR(Interquartile Range) = Q3-Q1
+# # Q1-1.5IQR : 최소 제한선 Q3+1.5IQR : 최대 제한선
+# # 범위를 좀 더 조정
+# # 'count' 데이터에서 전체의 25%에 해당하는 데이터 조회
+# count_q1 = np.percentile(df_train_1['count'], 25)
+# count_q1
+
+# # 'count' 데이터에서 전체의 75%에 해당하는 데이터 조회
+# count_q3 = np.percentile(df_train_1['count'], 75)
+# count_q3
+
+# # IQR = Q3 - Q1
+# count_IQR = count_q3 - count_q1
+# count_IQR
+
+# # 이상치를 제외한(이상치가 아닌 구간에 있는) 데이터만 조회
+# df_train_1_IQR = df_train_1[(df_train_1['count'] >= (count_q1 - (1.5 * count_IQR))) & (df_train_1['count'] <= (count_q3 + (1.5 * count_IQR)))]
+# # print(df_train_1_IQR)   #[10586 rows x 20 columns]
+
+
+# # 방법2) 3-sigma, 평균 $\pm$ 3* 표준편차차
+# df_train_1_sigma = df_train_1[np.abs(df_train_1["count"] - df_train_1["count"].mean()) <= (3*df_train_1["count"].std())]
+# # print(df_train_1_sigma)   #[10739 rows x 20 columns]
+
+
+# # # IQR을 적용했을 떄의 그림
+# # fig, axes = plt.subplots(nrows=2, ncols=2)
+# # fig.set_size_inches(12,10)
+# # sns.boxplot(data=df_train_1_IQR, y="count", orient= "v", ax=axes[0][0])
+# # sns.boxplot(data=df_train_1_IQR, y="count", x = "season",orient= "v", ax=axes[0][1])
+# # sns.boxplot(data=df_train_1_IQR, y="count", x="hour",orient= "v", ax=axes[1][0])
+# # sns.boxplot(data=df_train_1_IQR, y="count", x="workingday",orient= "v", ax=axes[1][1])
+
+# # axes[0][0].set(ylabel='Count',title="Rental amount")
+# # axes[0][1].set(xlabel='Season',ylabel='Count',title="Seasonal Rental amount")
+# # axes[1][0].set(xlabel='Hour of The Day',ylabel='Count',title="Hour Rental amount")
+# # axes[1][1].set(xlabel='Working Day',ylabel='Count',title="Working or not Rental amount")
+# # # plt.show()
+
+# # # 3-sigma를 적용하였을 때
+# # fig, axes = plt.subplots(nrows=2, ncols=2)
+# # fig.set_size_inches(12,10)
+# # sns.boxplot(data=df_train_1_sigma, y="count", orient= "v", ax=axes[0][0])
+# # sns.boxplot(data=df_train_1_sigma, y="count", x = "season",orient= "v", ax=axes[0][1])
+# # sns.boxplot(data=df_train_1_sigma, y="count", x="hour",orient= "v", ax=axes[1][0])
+# # sns.boxplot(data=df_train_1_sigma, y="count", x="workingday",orient= "v", ax=axes[1][1])
+
+# # axes[0][0].set(ylabel='Count',title="Rental amount")
+# # axes[0][1].set(xlabel='Season',ylabel='Count',title="Seasonal Rental amount")
+# # axes[1][0].set(xlabel='Hour of The Day',ylabel='Count',title="Hour Rental amount")
+# # axes[1][1].set(xlabel='Working Day',ylabel='Count',title="Working or not Rental amount")
+# # # plt.show()
+
+
+# # 선형회귀에서는 datetime 타입의 데이터를 사용할 수 없음
+# # 따라서 날짜 데이터를 숫자형 데이터타입으로 변환
+
+
+
+# #datetime -> integer 타입으로 변환하는 custom fun
+# def to_integer(datetime):
+#   return 10000*datetime.year +100*datetime.month+datetime.day
+
+# #데이터 타입 변경
+# df_train_1_IQR_int = df_train_1_IQR['datetime'].apply(lambda x: to_integer(x))
+# df_train_1_IQR['datetime'] = pd.Series(df_train_1_IQR_int)
+# # print(df_train_1_IQR)
+# # print(df_train_1_IQR.describe())
+# # print(df_train_1_IQR.info())
+
+
+# # 모델 적용
+# df_train_1_IQR
+
+# # target과 features 구분
+# # features = df_train_1_IQR.drop(['count'],axis = 1)
+# X = df_train_1_IQR.copy()
+# X.drop('year_month',axis=1)
+# y = df_train_1_IQR['count'].copy()
+
+# X_test = df_test.copy()
+
+# # 데이터를 편리하게 분할해주는 라이브러리 활용
+# from sklearn.model_selection import train_test_split
+
+# # 훈련 데이터의 25%를 검증 데이터로 활용
+# X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=.2, random_state=42)
+
+# # print(X.shape,y.shape)
+
+
+# from sklearn.metrics import make_scorer
+
+# def rmsle(predicted_values, actual_values):
+#     # 넘파이로 배열 형태로 바꿔준다.
+#     predicted_values = np.array(predicted_values)
+#     actual_values = np.array(actual_values)
+    
+#     # 예측값과 실제 값에 1을 더하고 로그를 씌워준다.
+#     log_predict = np.log(predicted_values + 1)
+#     log_actual = np.log(actual_values + 1)
+    
+#     # 위에서 계산한 예측값에서 실제값을 빼주고 제곱을 해준다.
+#     difference = log_predict - log_actual
+#     # difference = (log_predict - log_actual) ** 2
+#     difference = np.square(difference)
+    
+#     # 평균을 낸다.
+#     mean_difference = difference.mean()
+    
+#     # 다시 루트를 씌운다.
+#     score = np.sqrt(mean_difference)
+    
+#     return score
+
+# rmsle_scorer = make_scorer(rmsle)
+# # print(rmsle_scorer)
+
+
+# from sklearn.model_selection import KFold
+# from sklearn.model_selection import cross_val_score
+
+# k_fold = KFold(n_splits=10, shuffle=True, random_state=0)
+
+
+# X_train = X_train.drop('year_month',axis=1)
+
+
+
+# from sklearn.linear_model import LinearRegression
+
+# lig_reg = LinearRegression()
+# lig_reg.fit(X_train,y_train)
+
+# score = cross_val_score(lig_reg,X_train,y_train,cv = k_fold,scoring = rmsle_scorer)
+
+# # print(score.mean())
+# # print(score)
+
+
+# X_val = X_val.drop('year_month',axis = 1)
+# # print(X_test)
+
+
+# # predicts = model.predict(X_val)       #model.? 앞에 분석 뭐 안붙고하는게 맞나
+
+
