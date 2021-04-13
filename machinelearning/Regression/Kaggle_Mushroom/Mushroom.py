@@ -15,10 +15,10 @@ dir = os.path.dirname(os.path.realpath(__file__))
 
 df0 = pd.read_csv(dir+'./mushrooms.csv')
 df = df0.copy()
-# print(df)
-# print(df.info())        # y = class (e=edible, p=poisonous) / 21개의 변수x
-# print(df.describe())
-# print(df.isna().sum())  # 공란데이터 없음
+print(df)
+print(df.info())        # y = class (e=edible, p=poisonous) / 21개의 변수x
+print(df.describe())
+print(df.isna().sum())  # 공란데이터 없음
 
 
 # # 라벨인코딩이라는 것은 이름으로 되어있는 것을 숫자로 혹은 그 반대로 변환하는 것입니다.
@@ -30,30 +30,30 @@ from sklearn.preprocessing import LabelEncoder
 Labelencoder = LabelEncoder()
 for col in df.columns:
   df[col] = Labelencoder.fit_transform(df[col]) # column별로 label Encoder 적용
-# print(df)
+print(df)
 
 
-# # # 컬럼별 유니크한 요소들이 몇개나 있나 확인
-# count_var = []
+# # 컬럼별 유니크한 요소들이 몇개나 있나 확인
+count_var = []
 
-# for col in df.columns:
-#   count_var.append(df[col].unique().sum())    # series로 접근 -> columns으로 접근했기에?
-# size = np.arange(len(count_var))
+for col in df.columns:
+  count_var.append(df[col].unique().sum())    # series로 접근 -> columns으로 접근했기에?
+size = np.arange(len(count_var))
 
-# fig = plt.figure(figsize=(15,10))
-# ax = fig.add_subplot(1,1,1,facecolor = 'r')
-# ax.bar(size,count_var,color = 'k')
-# ax.set(title = 'Unique elements per column',
-#        ylabel = 'No of unique elements',
-#        xlabel = 'Features')
-# plt.show()
+fig = plt.figure(figsize=(15,10))
+ax = fig.add_subplot(1,1,1,facecolor = 'r')
+ax.bar(size,count_var,color = 'k')
+ax.set(title = 'Unique elements per column',
+       ylabel = 'No of unique elements',
+       xlabel = 'Features')
+plt.show()
 
 
-# # 상관관계 분석
-# df.corr() 
-# plt.figure(figsize=(10,10))
-# sns.heatmap(df.corr(),cmap='inferno',square=True)
-# plt.show()
+# 상관관계 분석
+df.corr() 
+plt.figure(figsize=(10,10))
+sns.heatmap(df.corr(),cmap='inferno',square=True)
+plt.show()
 
 
 # target / 변수 지정
@@ -61,12 +61,12 @@ target = df['class']
 train = df.drop('class',axis = 1)
 
 
-# # 분포확인..?
-# fig=plt.figure(figsize = (15,10))
-# ax=fig.add_subplot(1,1,1,facecolor='blue')
-# pd.value_counts(target).plot(kind='bar', cmap = 'cool')
-# plt.title("Class distribution")
-# plt.show()
+# 분포확인..?
+fig=plt.figure(figsize = (15,10))
+ax=fig.add_subplot(1,1,1,facecolor='blue')
+pd.value_counts(target).plot(kind='bar', cmap = 'cool')
+plt.title("Class distribution")
+plt.show()
 
 
 ########################## 여기서부터 모르겠음 #################################
